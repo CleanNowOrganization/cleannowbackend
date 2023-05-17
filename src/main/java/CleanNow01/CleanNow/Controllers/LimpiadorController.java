@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import CleanNow01.CleanNow.Models.Limpiador;
 import CleanNow01.CleanNow.Services.LimpiadorService;
+import io.micrometer.common.lang.Nullable;
 
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -26,11 +27,16 @@ public class LimpiadorController {
     // Agregar
     @PostMapping("/add")
     public ResponseEntity<String> addLimpiador(@RequestBody Limpiador professional) {
-        if(LimpiadorService.getProfessionalByDni(professional.getDni()) != null){
-            LimpiadorService.addLimpiador(professional);
-            return ResponseEntity.ok().body("Limpiador agregado con Exito");
-        } else{
-            return ResponseEntity.badRequest().body("El Limpiador ya existe");
+        try{
+            Limpiador find_Limpiador = LimpiadorService.getProfessionalByDni(professional.getDni());
+            if( find_Limpiador != null){
+                LimpiadorService.addLimpiador(professional);
+                return ResponseEntity.ok().body(find_Limpiador.getName());
+            } else{
+                return ResponseEntity.badRequest().body(find_Limpiador.getName());
+            }
+        } catch(Exception e){
+            return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
 
