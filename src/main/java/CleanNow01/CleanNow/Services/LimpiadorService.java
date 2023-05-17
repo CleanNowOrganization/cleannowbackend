@@ -21,7 +21,12 @@ public class LimpiadorService {
     }
     
     public Limpiador getProfessionalByDni(int dni) {
-        return Limpiadors.stream().filter(t -> t.getDni() == dni).findFirst().get();
+        for (Limpiador professional : Limpiadors) {
+            if (professional.getDni() == dni) {
+                return professional;
+            }
+        }
+        return null;
     }
 
     public Limpiador updateLimpiador(Limpiador professional) {
