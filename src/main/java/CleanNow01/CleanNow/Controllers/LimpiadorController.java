@@ -3,7 +3,9 @@ package CleanNow01.CleanNow.Controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -13,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import CleanNow01.CleanNow.Models.Limpiador;
 import CleanNow01.CleanNow.Services.LimpiadorService;
-import io.micrometer.common.lang.Nullable;
 
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -25,36 +26,65 @@ public class LimpiadorController {
     private LimpiadorService LimpiadorService;
 
     // Agregar
-    @PostMapping("/add")
+    @PostMapping
     public ResponseEntity<String> addLimpiador(@RequestBody Limpiador professional) {
         try{
-            Limpiador find_Limpiador = LimpiadorService.getProfessionalByDni(professional.getDni());
-            if( find_Limpiador != null){
-                LimpiadorService.addLimpiador(professional);
-                return ResponseEntity.ok().body(find_Limpiador.getName());
+            Limpiador find_Limpiador = LimpiadorService.getLimpiadorByDni(professional.getDni());
+            if( find_Limpiador == null){
+                LimpiadorService.createLimpiador(professional);
+                return ResponseEntity.status(HttpStatus.OK).body("Limpiador creado correctamente");
             } else{
-                return ResponseEntity.badRequest().body(find_Limpiador.getName());
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Limpiador ya existe");
             }
         } catch(Exception e){
-            return ResponseEntity.internalServerError().body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
     // Listar
-    @GetMapping("/list")
-    public List<Limpiador> getLimpiadors() {
-        return LimpiadorService.getLimpiadors();
+    @GetMapping
+    public ResponseEntity<List<Limpiador>> getLimpiadors() {
+        try {
+            List<Limpiador> Limpiadors = LimpiadorService.getAllLimpiadors();
+            return ResponseEntity.status(HttpStatus.OK).body(Limpiadors);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
-    // Obtener por nombre
+    // Obtener por dni
     @GetMapping("/{dni}")
-    public Limpiador getLimpiadorByName(@PathVariable int dni) {
-        return LimpiadorService.getProfessionalByDni(dni);
+    public ResponseEntity<Limpiador> getLimpiadorByDni(@PathVariable int dni) {
+        try {
+            Limpiador find_Limpiador = LimpiadorService.getLimpiadorByDni(dni);
+            if (find_Limpiador != null) {
+                return ResponseEntity.status(HttpStatus.OK).body(find_Limpiador);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
-    @PutMapping("/update")
-    public Limpiador updateLimpiador(@RequestBody Limpiador professional) {
-        return LimpiadorService.updateLimpiador(professional);
+    // Actualizar
+    @PutMapping("/actualizar")
+    public ResponseEntity<String> updateLimpiador(@RequestBody Limpiador professional) {
+        try {
+            LimpiadorService.updateLimpiador(professional.getDni(), professional);
+            return ResponseEntity.status(HttpStatus.OK).body("Limpiador actualizado correctamente");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 
+    @DeleteMapping("/{dni}")
+    public ResponseEntity<String> deleteFisicalLimpiador(@PathVariable int dni) {
+        try{
+            LimpiadorService.deleteLimpiador(dni);
+            return ResponseEntity.status(HttpStatus.OK).body("Limpiador eliminado correctamente");
+        } catch(Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
 }

@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 @Table(name = "limpiador")
 public class Limpiador {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int dni;
     @Column(nullable = false)
     private String name;
@@ -26,8 +25,14 @@ public class Limpiador {
     private LocalDateTime createdAt;
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+    @Column(name="is_active",nullable = false)
+    private boolean isActive;
+    @Column(name = "is_deleted",nullable = false)
+    private boolean isDeleted;
     
-    public Limpiador(int dni, String name, String lastName, String email, int phone, boolean checked_records, boolean available) {
+    public Limpiador(int dni, String name, String lastName, 
+                String email, int phone, boolean checked_records, 
+                boolean available) {
         this.dni = dni;
         this.name = name;
         this.lastName = lastName;
@@ -37,7 +42,11 @@ public class Limpiador {
         this.available = available;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
+        this.isActive = true;
+        this.isDeleted = false;
     }
+
+    public Limpiador() {}
     
     public String getName() {
         return name;
@@ -103,12 +112,20 @@ public class Limpiador {
         return updatedAt;
     }
 
-    public void update() {
-        this.updatedAt = LocalDateTime.now();
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }      
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+    public boolean isDeleted() { return isDeleted; }
+
+    public void setDeleted(boolean deleted) { isDeleted = deleted; }
 }
     
