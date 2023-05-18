@@ -1,8 +1,8 @@
 package CleanNow01.CleanNow.Services;
 
 import java.util.List;
-import org.springframework.stereotype.Service;
 
+import org.springframework.stereotype.Service;
 import CleanNow01.CleanNow.Models.Limpiador;
 import CleanNow01.CleanNow.Repository.LimpiadorRepository;
 import org.springframework.transaction.annotation.Transactional;
@@ -90,7 +90,7 @@ public class LimpiadorImpl implements LimpiadorService{
         //     limpiador.setActive(true);
         //     return true;
         // }
-        return false;
+        return true;
     }
 
     @Override
