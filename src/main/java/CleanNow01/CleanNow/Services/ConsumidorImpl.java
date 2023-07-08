@@ -24,6 +24,7 @@ public class ConsumidorImpl implements ConsumidorService{
             consumidor.getName(),
             consumidor.getLastName(),
             consumidor.getAddress(),
+            consumidor.getPassword(),
             consumidor.getEmail(),
             consumidor.getPhone()
         );

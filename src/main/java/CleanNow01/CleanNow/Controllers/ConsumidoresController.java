@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.util.List;
 
 @RestController
-@RequestMapping("/Consumidores")
+@RequestMapping("/consumidores")
 public class ConsumidoresController {
     @Autowired  
     private ConsumidorService ConsumidoresService;

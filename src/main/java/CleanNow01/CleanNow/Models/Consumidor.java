@@ -2,42 +2,44 @@ package CleanNow01.CleanNow.Models;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
-@Table(name = "consumidor")
+@Table(name = "consumidores")
 public class Consumidor {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int dni;
-    @Column(nullable = false)
+    @Column(name = "name" )
     private String name;
-    @Column(nullable = false)
+    @Column(name = "last_name")
     private String lastName;
-    @Column(nullable = true)
+    @Column(name = "email")
     private String email;
-    @Column(nullable = false)
+    @Column(name = "password")
     private String password;
-    @Column(nullable = false)
-    private String address;
-    @Column(nullable = false)
+    @OneToMany(mappedBy = "consumidor", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Direccion> direcciones;
+    @Column(name = "phone")
     private int phone;
-    @Column(name = "is_verified",nullable = false)
+    @Column(name = "is_verified")
     private boolean isVerified;
-    @Column(name = "is_active",nullable = false)
+    @Column(name = "is_active")
     private boolean isActive;
-    @Column(name = "is_deleted",nullable = false)
+    @Column(name = "is_deleted")
     private boolean isDeleted;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    public Consumidor(int dni, String name, String lastName, String email, String address, int phone) {
+    public Consumidor(int dni, String name, String lastName, List<Direccion> direccions, String password, String email, int phone) {
         this.dni = dni;
         this.name = name;
         this.lastName = lastName;
         this.email = email;
-        this.password = "";
-        this.address = address;
+        this.direcciones = direccions;
+        this.password = password;
         this.phone = phone;
         this.isActive = true;
         this.isDeleted = false;
@@ -45,8 +47,6 @@ public class Consumidor {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
-
-    public Consumidor() {}
 
     public int getDni() {
         return dni;
@@ -88,12 +88,12 @@ public class Consumidor {
         this.password=password;
     }
 
-    public String getAddress() {
-        return address;
+    public List<Direccion> getAddress() {
+        return direcciones;
     }
 
-    public void setAddress(String address) {
-        this.address=address;
+    public void setAddress(List<Direccion> direccions) {
+        this.direcciones=direccions;
     }
 
     public int getPhone() {
