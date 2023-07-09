@@ -20,5 +20,4 @@ public class Servicio {
     @OneToMany(mappedBy = "servicio", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Reserva> reservas;
 
-    // Getters and setters...
 }

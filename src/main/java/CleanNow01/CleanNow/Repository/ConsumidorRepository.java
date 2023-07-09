@@ -11,4 +11,5 @@ public interface ConsumidorRepository extends JpaRepository<Consumidor, Long>{
     Consumidor findByDni(int dni);
     Consumidor findByEmail(String email);
     void deleteByDni(int dni);
+    Consumidor findByUid(String uid);
 }

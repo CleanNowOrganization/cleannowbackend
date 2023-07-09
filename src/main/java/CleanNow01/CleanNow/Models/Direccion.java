@@ -1,5 +1,9 @@
 package CleanNow01.CleanNow.Models;
 
+import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -19,15 +23,26 @@ public class Direccion {
     @Column(name = "codigo_postal")
     private String codigoPostal;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "consumidor_id")
     private Consumidor consumidor;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     public Direccion(String calle, String ciudad, String codigoPostal) {
         this.calle = calle;
         this.ciudad = ciudad;
         this.codigoPostal = codigoPostal;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
+
+    public Direccion(){};
 
     public Long getId() {
         return id;
@@ -69,4 +84,23 @@ public class Direccion {
         this.consumidor = consumidor;
     }
 
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt=createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt=updatedAt;
+    }
+
+    public String toString(){
+        return "Direccion: " + this.calle + " " + this.ciudad + " " + this.codigoPostal;
+    }
 }

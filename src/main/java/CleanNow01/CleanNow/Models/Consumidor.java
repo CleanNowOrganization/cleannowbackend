@@ -2,13 +2,16 @@ package CleanNow01.CleanNow.Models;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "consumidores")
 public class Consumidor {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "dni")
     private int dni;
     @Column(name = "name" )
     private String name;
@@ -18,10 +21,13 @@ public class Consumidor {
     private String email;
     @Column(name = "password")
     private String password;
+    @JsonManagedReference
     @OneToMany(mappedBy = "consumidor", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Direccion> direcciones;
+    private List<Direccion> direcciones = new ArrayList<>();
     @Column(name = "phone")
     private int phone;
+    @Column(name = "uid")
+    private String uid;
     @Column(name = "is_verified")
     private boolean isVerified;
     @Column(name = "is_active")
@@ -33,20 +39,23 @@ public class Consumidor {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    public Consumidor(int dni, String name, String lastName, List<Direccion> direccions, String password, String email, int phone) {
+    public Consumidor(int dni, String name, String lastName, String password, String email, int phone) {
         this.dni = dni;
         this.name = name;
         this.lastName = lastName;
         this.email = email;
-        this.direcciones = direccions;
+        this.direcciones = new ArrayList<>();
         this.password = password;
         this.phone = phone;
+        this.uid = "";
         this.isActive = true;
         this.isDeleted = false;
         this.isVerified = true;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
+
+    public Consumidor(){};
 
     public int getDni() {
         return dni;
@@ -88,12 +97,12 @@ public class Consumidor {
         this.password=password;
     }
 
-    public List<Direccion> getAddress() {
+    public List<Direccion> getDirecciones() {
         return direcciones;
     }
 
-    public void setAddress(List<Direccion> direccions) {
-        this.direcciones=direccions;
+    public void setDirecciones(List<Direccion> direcciones) {
+        this.direcciones=direcciones;
     }
 
     public int getPhone() {
@@ -102,6 +111,14 @@ public class Consumidor {
 
     public void setPhone(int phone) {
         this.phone=phone;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid=uid;
     }
 
     public boolean isActive() {
@@ -124,6 +141,10 @@ public class Consumidor {
         return createdAt;
     }
 
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt=createdAt;
+    }
+    
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
@@ -138,5 +159,22 @@ public class Consumidor {
 
     public void setVerified(boolean verified) {
         this.isVerified=verified;
+    }
+
+    public String toString() {
+        return "Consumidor{" +
+                "dni=" + dni +
+                ", name='" + name + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", direcciones=" + direcciones +
+                ", phone=" + phone +
+                ", isVerified=" + isVerified +
+                ", isActive=" + isActive +
+                ", isDeleted=" + isDeleted +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
     }
 }

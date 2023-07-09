@@ -31,5 +31,4 @@ public class Reserva {
     @OneToOne(mappedBy = "reserva", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Cancelacion cancelacion;
 
-    // Getters and setters...
 }

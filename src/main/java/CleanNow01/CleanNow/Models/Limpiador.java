@@ -5,21 +5,22 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "limpiador")
+@Table(name = "limpiadores")
 public class Limpiador {
     @Id
+    @Column(name = "dni")
     private int dni;
-    @Column(nullable = false)
+    @Column(name = "name")
     private String name;
-    @Column(name= "last_name", nullable = false)
+    @Column(name= "last_name")
     private String lastName;
-    @Column(nullable = true)
+    @Column(name = "email")
     private String email;
-    @Column(nullable = false)
+    @Column(name = "phone")
     private int phone;
-    @Column(nullable = false)
+    @Column(name = "checked_records")
     private boolean checked_records;
-    @Column(nullable = false)
+    @Column(name = "available")
     private boolean available;
     @Column(name = "created_at")
     private LocalDateTime createdAt;

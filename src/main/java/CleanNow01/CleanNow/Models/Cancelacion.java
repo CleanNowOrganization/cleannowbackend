@@ -21,5 +21,4 @@ public class Cancelacion {
     @JoinColumn(name = "reserva_id")
     private Reserva reserva;
 
-    // Getters and setters...
 }

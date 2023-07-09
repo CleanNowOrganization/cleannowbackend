@@ -1,11 +1,13 @@
 package CleanNow01.CleanNow.Services;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import CleanNow01.CleanNow.Repository.ConsumidorRepository;
 import CleanNow01.CleanNow.Models.Consumidor;
+import CleanNow01.CleanNow.Models.Direccion;
 
 @Service
 @Transactional
@@ -19,16 +21,20 @@ public class ConsumidorImpl implements ConsumidorService{
 
     @Override
     public Consumidor createConsumidor(Consumidor consumidor) {
-        Consumidor person = new Consumidor(
-            consumidor.getDni(),
-            consumidor.getName(),
-            consumidor.getLastName(),
-            consumidor.getAddress(),
-            consumidor.getPassword(),
-            consumidor.getEmail(),
-            consumidor.getPhone()
-        );
-        return consumidorRepository.save(person);
+        
+        consumidor.setCreatedAt(LocalDateTime.now());
+        consumidor.setUpdatedAt(LocalDateTime.now());
+        consumidor.setActive(true);
+        consumidor.setUid(consumidor.getUid());
+
+        // System.out.println(consumidor.toString());
+        for (Direccion direccion : consumidor.getDirecciones()) {
+            direccion.setConsumidor(consumidor);
+            direccion.setCreatedAt(LocalDateTime.now());
+            direccion.setUpdatedAt(LocalDateTime.now());
+        }
+
+        return consumidorRepository.save(consumidor);
     }
 
     @Override
@@ -43,15 +49,15 @@ public class ConsumidorImpl implements ConsumidorService{
 
     @Override
     public Consumidor updateConsumidor(int dni, Consumidor consumidor) {
-        Consumidor consumidorToUpdate = consumidorRepository.findByDni(dni);
+        Consumidor consumidorToUpdate = getConsumidorByDni(dni);
         if(consumidor.getName() != consumidorToUpdate.getName()){
             consumidorToUpdate.setName(consumidor.getName());
         }
         if(consumidor.getLastName() != consumidorToUpdate.getLastName()){
             consumidorToUpdate.setLastName(consumidor.getLastName());
         }
-        if(consumidor.getAddress() != consumidorToUpdate.getAddress()){
-            consumidorToUpdate.setAddress(consumidor.getAddress());
+        if(consumidor.getDirecciones() != consumidorToUpdate.getDirecciones()){
+            consumidorToUpdate.setDirecciones(consumidor.getDirecciones());
         }
         if(consumidor.getPhone() != consumidorToUpdate.getPhone()){
             consumidorToUpdate.setPhone(consumidor.getPhone());
@@ -73,8 +79,10 @@ public class ConsumidorImpl implements ConsumidorService{
     }
 
     @Override
-    public void deleteConsumidor(int dni) {
-        consumidorRepository.deleteByDni(dni);
+    public Consumidor deleteLogicConsumidor(int dni) {
+        Consumidor consumidor = consumidorRepository.findByDni(dni);
+        consumidor.setDeleted(false);
+        return consumidorRepository.save(consumidor);
     }
 
     @Override
@@ -91,19 +99,6 @@ public class ConsumidorImpl implements ConsumidorService{
     }
 
     @Override
-    public boolean isDeleted(int dni) {
-        // Consumidor consumidor = consumidorRepository.findByDni(dni);
-        // if(consumidor.isDeleted()){
-        //     consumidor.setDeleted(false);
-        //     return true;
-        // } else {
-        //     consumidor.setDeleted(true);
-        //     return false;
-        // }
-        return false;
-    }
-
-    @Override
     public boolean login(String email, String password) {
         Consumidor consumidor = consumidorRepository.findByEmail(email);
         if(consumidor.getPassword().equals(password) && consumidor.isActive() && !consumidor.isDeleted()){
@@ -111,6 +106,18 @@ public class ConsumidorImpl implements ConsumidorService{
         } else {
             return false;
         }
+    }
+
+    @Override
+    public Consumidor isNotActive(int dni) {
+        Consumidor consumidor = consumidorRepository.findByDni(dni);
+        consumidor.setActive(false);
+        return consumidorRepository.save(consumidor);
+    }
+
+    @Override
+    public Consumidor findByUid(String uid) {
+        return consumidorRepository.findByUid(uid);
     }
     
 }
