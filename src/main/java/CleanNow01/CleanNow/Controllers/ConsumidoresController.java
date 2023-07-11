@@ -30,7 +30,7 @@ public class ConsumidoresController {
     @Autowired  
     private ConsumidorService ConsumidoresService;
 
-    @PostMapping("/login")
+    @PostMapping("/auth/login")
     public ResponseEntity<Consumidor> login(@RequestHeader("Authorization") String token ,@RequestBody LoginRequest loginRequest) {
         try {
             // Dividir el encabezado de autorización en "Bearer" y el token
@@ -39,13 +39,11 @@ public class ConsumidoresController {
                 // El encabezado de autorización no es válido
                 throw new IllegalArgumentException("Invalid Authorization header. Must be 'Bearer [token]'");
             }
-
             // Verificar el token de Firebase
             String tokenAuth = parts[1];
             // Verificar el token de Firebase
             FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(tokenAuth);
             String uid = decodedToken.getUid();
-            System.out.println(uid);
             // Buscar el usuario en la base de datos
             Consumidor find_Consumidor = ConsumidoresService.findByUid(uid);
             if (find_Consumidor != null) {
@@ -58,22 +56,21 @@ public class ConsumidoresController {
         }
     }
 
-
     // Agregar
-       @PostMapping
-       public ResponseEntity<String> addConsumidor(@RequestBody Consumidor professional) {
-           try{
-               Consumidor find_Consumidor = ConsumidoresService.getConsumidorByDni(professional.getDni());
-               if( find_Consumidor == null){
-                   ConsumidoresService.createConsumidor(professional);
-                   return ResponseEntity.status(HttpStatus.OK).body("Consumidor creado correctamente");
-               } else{
-                   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Consumidor ya existe");
-               }
-           } catch(Exception e){
-               return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-           }
-       }
+    @PostMapping
+    public ResponseEntity<String> addConsumidor(@RequestBody Consumidor professional) {
+        try{
+            Consumidor find_Consumidor = ConsumidoresService.getConsumidorByDni(professional.getDni());
+            if( find_Consumidor == null){
+                ConsumidoresService.createConsumidor(professional);
+                return ResponseEntity.status(HttpStatus.OK).body("Consumidor creado correctamente");
+            } else{
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Consumidor ya existe");
+            }
+        } catch(Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
 
          // Listar
     @GetMapping

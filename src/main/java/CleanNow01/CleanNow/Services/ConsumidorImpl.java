@@ -27,7 +27,7 @@ public class ConsumidorImpl implements ConsumidorService{
         consumidor.setActive(true);
         consumidor.setUid(consumidor.getUid());
 
-        // System.out.println(consumidor.toString());
+        System.out.println(consumidor.toString());
         for (Direccion direccion : consumidor.getDirecciones()) {
             direccion.setConsumidor(consumidor);
             direccion.setCreatedAt(LocalDateTime.now());
