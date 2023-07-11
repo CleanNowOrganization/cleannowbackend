@@ -2,43 +2,52 @@ package CleanNow01.CleanNow.Models;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
-@Table(name = "consumidor")
+@Table(name = "consumidores")
 public class Consumidor {
     @Id
+    @Column(name = "dni")
     private int dni;
-    @Column(nullable = false)
+    @Column(name = "name" )
     private String name;
-    @Column(nullable = false)
+    @Column(name = "last_name")
     private String lastName;
-    @Column(nullable = true)
+    @Column(name = "email")
     private String email;
-    @Column(nullable = false)
+    @Column(name = "password")
     private String password;
-    @Column(nullable = false)
-    private String address;
-    @Column(nullable = false)
+    @JsonManagedReference
+    @OneToMany(mappedBy = "consumidor", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Direccion> direcciones = new ArrayList<>();
+    @Column(name = "phone")
     private int phone;
-    @Column(name = "is_verified",nullable = false)
+    @Column(name = "uid")
+    private String uid;
+    @Column(name = "is_verified")
     private boolean isVerified;
-    @Column(name = "is_active",nullable = false)
+    @Column(name = "is_active")
     private boolean isActive;
-    @Column(name = "is_deleted",nullable = false)
+    @Column(name = "is_deleted")
     private boolean isDeleted;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    public Consumidor(int dni, String name, String lastName, String email, String address, int phone) {
+    public Consumidor(int dni, String name, String lastName, String password, String email, int phone) {
         this.dni = dni;
         this.name = name;
         this.lastName = lastName;
         this.email = email;
-        this.password = "";
-        this.address = address;
+        this.direcciones = new ArrayList<>();
+        this.password = password;
         this.phone = phone;
+        this.uid = "";
         this.isActive = true;
         this.isDeleted = false;
         this.isVerified = true;
@@ -46,7 +55,7 @@ public class Consumidor {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public Consumidor() {}
+    public Consumidor(){};
 
     public int getDni() {
         return dni;
@@ -88,12 +97,12 @@ public class Consumidor {
         this.password=password;
     }
 
-    public String getAddress() {
-        return address;
+    public List<Direccion> getDirecciones() {
+        return direcciones;
     }
 
-    public void setAddress(String address) {
-        this.address=address;
+    public void setDirecciones(List<Direccion> direcciones) {
+        this.direcciones=direcciones;
     }
 
     public int getPhone() {
@@ -102,6 +111,14 @@ public class Consumidor {
 
     public void setPhone(int phone) {
         this.phone=phone;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid=uid;
     }
 
     public boolean isActive() {
@@ -124,6 +141,10 @@ public class Consumidor {
         return createdAt;
     }
 
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt=createdAt;
+    }
+    
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
@@ -138,5 +159,22 @@ public class Consumidor {
 
     public void setVerified(boolean verified) {
         this.isVerified=verified;
+    }
+
+    public String toString() {
+        return "Consumidor{" +
+                "dni=" + dni +
+                ", name='" + name + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", direcciones=" + direcciones +
+                ", phone=" + phone +
+                ", isVerified=" + isVerified +
+                ", isActive=" + isActive +
+                ", isDeleted=" + isDeleted +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
     }
 }
