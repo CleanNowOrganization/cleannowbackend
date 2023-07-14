@@ -39,7 +39,7 @@ public class Consumidor {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    public Consumidor(int dni, String name, String lastName, String password, String email, int phone) {
+    public Consumidor(int dni, String name, String lastName, String password, String email, int phone, String uid) {
         this.dni = dni;
         this.name = name;
         this.lastName = lastName;
@@ -47,7 +47,7 @@ public class Consumidor {
         this.direcciones = new ArrayList<>();
         this.password = password;
         this.phone = phone;
-        this.uid = "";
+        this.uid = uid;
         this.isActive = true;
         this.isDeleted = false;
         this.isVerified = true;

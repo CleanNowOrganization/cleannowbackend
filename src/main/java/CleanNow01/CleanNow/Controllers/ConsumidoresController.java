@@ -44,9 +44,12 @@ public class ConsumidoresController {
             // Verificar el token de Firebase
             FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(tokenAuth);
             String uid = decodedToken.getUid();
+            System.out.println(uid);
+            // System.out.println(decodedToken.getEmail());
             // Buscar el usuario en la base de datos
             Consumidor find_Consumidor = ConsumidoresService.findByUid(uid);
-            if (find_Consumidor != null) {
+            // System.out.println(find_Consumidor.getEmail());
+            if (find_Consumidor.getEmail().equals(decodedToken.getEmail())) {
                 return ResponseEntity.status(HttpStatus.OK).body(find_Consumidor);
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
