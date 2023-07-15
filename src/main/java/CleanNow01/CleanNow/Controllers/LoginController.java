@@ -15,7 +15,6 @@ import com.google.firebase.auth.FirebaseToken;
 
 import CleanNow01.CleanNow.Models.Administrador;
 import CleanNow01.CleanNow.Models.Consumidor;
-import CleanNow01.CleanNow.Models.Request.LoginModel;
 import CleanNow01.CleanNow.Services.AdministradorService;
 import CleanNow01.CleanNow.Services.ConsumidorService;
 
@@ -30,7 +29,7 @@ public class LoginController {
     private AdministradorService AdministradorService;
 
     @PostMapping("/consumidores")
-    public ResponseEntity<Consumidor> loginConsumidor(@RequestHeader("Authorization") String token ,@RequestBody LoginModel loginRequest) {
+    public ResponseEntity<Consumidor> loginConsumidor(@RequestHeader("Authorization") String token) {
         try {
             // Dividir el encabezado de autorización en "Bearer" y el token
             String[] parts = token.split(" ");
@@ -43,18 +42,19 @@ public class LoginController {
             // Verificar el token de Firebase
             FirebaseAuth firebaseInstance = FirebaseAuth.getInstance();
             FirebaseToken decodedToken = firebaseInstance.verifyIdToken(tokenAuth);
+            if(decodedToken == null){
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+            } else{
+                String uid = decodedToken.getUid();
 
-            String uid = decodedToken.getUid();
-            System.out.println(uid);
-
-            // System.out.println(decodedToken.getEmail());
-            // Buscar el usuario en la base de datos
-            Consumidor find_Consumidor = ConsumidoresService.findByUid(uid);
-            // System.out.println(find_Consumidor.getEmail());
-            if (find_Consumidor.getEmail().equals(decodedToken.getEmail())) {
-                return ResponseEntity.status(HttpStatus.OK).body(find_Consumidor);
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+                // Buscar el usuario en la base de datos
+                Consumidor find_Consumidor = ConsumidoresService.findByUid(uid);
+                // System.out.println(find_Consumidor.getEmail());
+                if (find_Consumidor.getEmail().equals(decodedToken.getEmail())) {
+                    return ResponseEntity.status(HttpStatus.OK).body(find_Consumidor);
+                } else {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+                }
             }
         } catch (FirebaseAuthException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
@@ -62,8 +62,7 @@ public class LoginController {
     }
 
     @PostMapping("/admin")
-    public ResponseEntity<Administrador> loginAdmin(@RequestHeader("Authorization") String token ,@RequestBody LoginModel loginRequest) {
-            System.out.println("HOLA GENTE: " + token);
+    public ResponseEntity<Administrador> loginAdmin(@RequestHeader("Authorization") String token) {
         try {
             // Dividir el encabezado de autorización en "Bearer" y el token
             String[] parts = token.split(" ");
@@ -73,7 +72,6 @@ public class LoginController {
             }
             // Verificar el token de Firebase
             String tokenAuth = parts[1];
-            System.out.println(tokenAuth);
             // Verificar el token de Firebase
             FirebaseAuth firebaseInstance = FirebaseAuth.getInstance();
             FirebaseToken decodedToken = firebaseInstance.verifyIdToken(tokenAuth);

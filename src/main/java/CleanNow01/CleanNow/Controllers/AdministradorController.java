@@ -74,7 +74,7 @@ public class AdministradorController {
             // Verificar el token de Firebase
             FirebaseAuth firebaseInstance = FirebaseAuth.getInstance();
             FirebaseToken decodedToken = firebaseInstance.verifyIdToken(tokenAuth);
-            if(!decodedToken.getUid().equals("")){
+            if(decodedToken.equals(null)){
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             } else{
                 List<Consumidor> consumidores = ConsumidoresService.getAllConsumidors();

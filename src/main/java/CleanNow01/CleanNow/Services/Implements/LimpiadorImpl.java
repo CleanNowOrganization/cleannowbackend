@@ -1,10 +1,12 @@
-package CleanNow01.CleanNow.Services;
+package CleanNow01.CleanNow.Services.Implements;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 import CleanNow01.CleanNow.Models.Limpiador;
 import CleanNow01.CleanNow.Repository.LimpiadorRepository;
+import CleanNow01.CleanNow.Services.LimpiadorService;
+
 import org.springframework.transaction.annotation.Transactional;
 
 @Service

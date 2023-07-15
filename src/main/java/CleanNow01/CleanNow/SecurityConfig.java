@@ -19,6 +19,7 @@ public class SecurityConfig {
             .authorizeHttpRequests((authorize) -> {
                     authorize
                         .requestMatchers(HttpMethod.POST, "/consumidores").permitAll() // permitir el acceso a POST /consumidores sin autenticación
+                        .requestMatchers(HttpMethod.GET, "/consumidores/**").permitAll() // permitir el acceso a GET /consumidores sin autenticación
                         .requestMatchers("/auth/login/consumidores").permitAll() // permitir el acceso a /auth/login
                         .requestMatchers("/auth/login/admin").permitAll() // permitir el acceso a  /auth/login
                         .requestMatchers("/auth/login/limpiadores").permitAll() // permitir el acceso a /auth/login
