@@ -1,17 +1,17 @@
 package CleanNow01.CleanNow.Models.Request;
 
-public class LoginRequest  {
+public class LoginModel  {
     private String email;
     private String password;
     private String token;
 
-    public LoginRequest(String email, String password, String token) {
+    public LoginModel(String email, String password, String token) {
         this.email = email;
         this.password = password;
         this.token = token;
     }
 
-    public LoginRequest(){};
+    public LoginModel(){};
 
     public String getEmail() {
         return email;
