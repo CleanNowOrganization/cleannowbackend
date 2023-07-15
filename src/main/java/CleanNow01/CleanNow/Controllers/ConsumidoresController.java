@@ -22,8 +22,6 @@ import CleanNow01.CleanNow.Services.ConsumidorService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/consumidores")
 public class ConsumidoresController {
@@ -72,16 +70,16 @@ public class ConsumidoresController {
         }
     }
 
-         // Listar
-    @GetMapping
-    public ResponseEntity<List<Consumidor>> getConsumidores(){
-        try{
-            List<Consumidor> consumidores = ConsumidoresService.getAllConsumidors();
-            return ResponseEntity.status(HttpStatus.OK).body(consumidores);
-        } catch(Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
+    // Listar
+    // @GetMapping
+    // public ResponseEntity<List<Consumidor>> getConsumidores(){
+    //     try{
+    //         List<Consumidor> consumidores = ConsumidoresService.getAllConsumidors();
+    //         return ResponseEntity.status(HttpStatus.OK).body(consumidores);
+    //     } catch(Exception e){
+    //         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    //     }
+    // }
 
     // Obtener por dni
     @GetMapping("/{dni}")

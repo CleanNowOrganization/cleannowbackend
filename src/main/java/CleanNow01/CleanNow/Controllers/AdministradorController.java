@@ -7,10 +7,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseToken;
 import com.google.firebase.auth.UserRecord;
 import com.google.firebase.auth.UserRecord.CreateRequest;
 
@@ -60,10 +62,24 @@ public class AdministradorController {
     }
 
     @GetMapping("/consumidores")
-    public ResponseEntity<List<Consumidor>> getConsumidores(){
+    public ResponseEntity<List<Consumidor>> getConsumidores(@RequestHeader("Authorization") String token){
         try{
-            List<Consumidor> consumidores = ConsumidoresService.getAllConsumidors();
-            return ResponseEntity.status(HttpStatus.OK).body(consumidores);
+            String[] parts = token.split(" ");
+            if (parts.length != 2 || !"Bearer".equals(parts[0])) {
+                // El encabezado de autorización no es válido
+                throw new IllegalArgumentException("Invalid Authorization header. Must be 'Bearer [token]'");
+            }
+            // Verificar el token de Firebase
+            String tokenAuth = parts[1];
+            // Verificar el token de Firebase
+            FirebaseAuth firebaseInstance = FirebaseAuth.getInstance();
+            FirebaseToken decodedToken = firebaseInstance.verifyIdToken(tokenAuth);
+            if(!decodedToken.getUid().equals("")){
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            } else{
+                List<Consumidor> consumidores = ConsumidoresService.getAllConsumidors();
+                return ResponseEntity.status(HttpStatus.OK).body(consumidores);
+            }
         } catch(Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
