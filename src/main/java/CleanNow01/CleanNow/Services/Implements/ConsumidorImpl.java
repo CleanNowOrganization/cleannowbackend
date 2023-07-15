@@ -1,4 +1,4 @@
-package CleanNow01.CleanNow.Services;
+package CleanNow01.CleanNow.Services.Implements;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import CleanNow01.CleanNow.Repository.ConsumidorRepository;
+import CleanNow01.CleanNow.Services.ConsumidorService;
 import CleanNow01.CleanNow.Models.Consumidor;
 import CleanNow01.CleanNow.Models.Direccion;
 
@@ -21,11 +22,6 @@ public class ConsumidorImpl implements ConsumidorService{
 
     @Override
     public Consumidor createConsumidor(Consumidor consumidor) {
-        
-        consumidor.setCreatedAt(LocalDateTime.now());
-        consumidor.setUpdatedAt(LocalDateTime.now());
-        consumidor.setActive(true);
-        consumidor.setUid(consumidor.getUid());
 
         System.out.println(consumidor.toString());
         for (Direccion direccion : consumidor.getDirecciones()) {

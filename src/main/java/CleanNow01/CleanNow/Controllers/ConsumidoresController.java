@@ -1,5 +1,7 @@
 package CleanNow01.CleanNow.Controllers;
 
+import java.security.SecureRandom;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -7,22 +9,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.auth.FirebaseToken;
+import com.google.firebase.auth.UserRecord;
+import com.google.firebase.auth.UserRecord.CreateRequest;
 
 import CleanNow01.CleanNow.Models.Consumidor;
-import CleanNow01.CleanNow.Models.Request.LoginRequest;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 
 import CleanNow01.CleanNow.Services.ConsumidorService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/consumidores")
@@ -30,39 +29,32 @@ public class ConsumidoresController {
     @Autowired  
     private ConsumidorService ConsumidoresService;
 
-    @PostMapping("/auth/login")
-    public ResponseEntity<Consumidor> login(@RequestHeader("Authorization") String token ,@RequestBody LoginRequest loginRequest) {
-        try {
-            // Dividir el encabezado de autorización en "Bearer" y el token
-            String[] parts = token.split(" ");
-            if (parts.length != 2 || !"Bearer".equals(parts[0])) {
-                // El encabezado de autorización no es válido
-                throw new IllegalArgumentException("Invalid Authorization header. Must be 'Bearer [token]'");
-            }
-            // Verificar el token de Firebase
-            String tokenAuth = parts[1];
-            // Verificar el token de Firebase
-            FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(tokenAuth);
-            String uid = decodedToken.getUid();
-            // Buscar el usuario en la base de datos
-            Consumidor find_Consumidor = ConsumidoresService.findByUid(uid);
-            if (find_Consumidor != null) {
-                return ResponseEntity.status(HttpStatus.OK).body(find_Consumidor);
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-            }
-        } catch (FirebaseAuthException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
-        }
-    }
-
     // Agregar
     @PostMapping
-    public ResponseEntity<String> addConsumidor(@RequestBody Consumidor professional) {
+    public ResponseEntity<String> addConsumidor(@RequestBody Consumidor consumidor) {
         try{
-            Consumidor find_Consumidor = ConsumidoresService.getConsumidorByDni(professional.getDni());
+            FirebaseAuth firebaseInstance = FirebaseAuth.getInstance();
+
+            CreateRequest request = new CreateRequest();
+            request.setEmail(consumidor.getEmail());
+            request.setPassword(consumidor.getPassword());
+
+            firebaseInstance.createUser(request);
+
+            UserRecord user = FirebaseAuth.getInstance().getUserByEmail(consumidor.getEmail());
+
+            Consumidor find_Consumidor = ConsumidoresService.getConsumidorByDni(consumidor.getDni());
             if( find_Consumidor == null){
-                ConsumidoresService.createConsumidor(professional);
+                consumidor.setUid(user.getUid());
+                consumidor.setActive(true);
+                consumidor.setDeleted(false);
+                consumidor.setCreatedAt(user.getUserMetadata().getCreationTimestamp());
+                consumidor.setUpdatedAt(user.getUserMetadata().getCreationTimestamp());
+                int strength = 10;
+                BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(strength, new SecureRandom());
+                String encodedPassword = bCryptPasswordEncoder.encode(consumidor.getPassword());
+                consumidor.setPassword(encodedPassword);
+                ConsumidoresService.createConsumidor(consumidor);
                 return ResponseEntity.status(HttpStatus.OK).body("Consumidor creado correctamente");
             } else{
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Consumidor ya existe");
@@ -72,16 +64,16 @@ public class ConsumidoresController {
         }
     }
 
-         // Listar
-    @GetMapping
-    public ResponseEntity<List<Consumidor>> getConsumidores(){
-        try{
-            List<Consumidor> consumidores = ConsumidoresService.getAllConsumidors();
-            return ResponseEntity.status(HttpStatus.OK).body(consumidores);
-        } catch(Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
+    // Listar
+    // @GetMapping
+    // public ResponseEntity<List<Consumidor>> getConsumidores(){
+    //     try{
+    //         List<Consumidor> consumidores = ConsumidoresService.getAllConsumidors();
+    //         return ResponseEntity.status(HttpStatus.OK).body(consumidores);
+    //     } catch(Exception e){
+    //         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    //     }
+    // }
 
     // Obtener por dni
     @GetMapping("/{dni}")

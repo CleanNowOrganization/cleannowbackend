@@ -35,9 +35,9 @@ public class Consumidor {
     @Column(name = "is_deleted")
     private boolean isDeleted;
     @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    private Long createdAt;
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    private Long updatedAt;
 
     public Consumidor(int dni, String name, String lastName, String password, String email, int phone) {
         this.dni = dni;
@@ -51,8 +51,8 @@ public class Consumidor {
         this.isActive = true;
         this.isDeleted = false;
         this.isVerified = true;
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
+        this.createdAt = System.currentTimeMillis();
+        this.updatedAt = System.currentTimeMillis();
     }
 
     public Consumidor(){};
@@ -137,19 +137,19 @@ public class Consumidor {
         this.isDeleted=deleted;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public Long getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(Long createdAt) {
         this.createdAt=createdAt;
     }
     
-    public LocalDateTime getUpdatedAt() {
+    public Long getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(LocalDateTime updatedAt) {
+    public void setUpdatedAt(Long updatedAt) {
         this.updatedAt=updatedAt;
     }
 
