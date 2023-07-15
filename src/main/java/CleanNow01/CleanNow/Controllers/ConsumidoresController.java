@@ -11,7 +11,7 @@ import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
 
 import CleanNow01.CleanNow.Models.Consumidor;
-import CleanNow01.CleanNow.Models.Request.LoginRequest;
+import CleanNow01.CleanNow.Models.Request.LoginModel;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +31,7 @@ public class ConsumidoresController {
     private ConsumidorService ConsumidoresService;
 
     @PostMapping("/auth/login")
-    public ResponseEntity<Consumidor> login(@RequestHeader("Authorization") String token ,@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<Consumidor> login(@RequestHeader("Authorization") String token ,@RequestBody LoginModel loginModel) {
         try {
             // Dividir el encabezado de autorización en "Bearer" y el token
             String[] parts = token.split(" ");
